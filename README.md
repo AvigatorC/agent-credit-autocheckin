@@ -1,22 +1,26 @@
-# Checkin Scripts
+# Agent Credit AutoCheckin
 
-Trae / Qoder 每日自动签到脚本合集。**纯 Python 标准库，零第三方依赖**，可直接在青龙、呆呆面板或任意 Python 3.8+ 环境运行。
+为 AI 编程 Agent 自动领取每日额度。目前支持 **Trae** 与 **Qoder**。
 
-## 脚本一览
+纯 Python 标准库实现，零第三方依赖，可直接在青龙、呆呆面板或任意 Python 3.8+ 环境运行。
 
-| 脚本 | 作用 | 入口 |
+## 支持的工具
+
+| 工具 | 每日额度 | 脚本 |
 | :--- | :--- | :--- |
-| `trae/trae_checkin.py` | Trae Work 每日签到、积分查询、抽奖 | `python3 trae/trae_checkin.py` |
-| `qoder/qoder_checkin.py` | Qoder 每日积分领取 | `python3 qoder/qoder_checkin.py` |
+| **Trae Work** | 签到积分 + 可选抽奖 | `trae/trae_checkin.py` |
+| **Qoder** | 活动领取（每日 10:00 刷新） | `qoder/qoder_checkin.py` |
 
-两个脚本都支持：多账号、自动续期 Token、失败才推送、退出码语义。
+两者都支持：多账号、Token 自动续期、失败才推送、退出码语义。
+
+> 欢迎补充其他 Agent 的适配（Windsurf / Cursor / CodeBuddy 等），结构照着现有两个目录建即可。
 
 ## 快速开始
 
 ### Trae
 
 ```bash
-export TRAE_TOKEN='eyJ...'      # access_token
+export TRAE_TOKEN='eyJ...'          # access_token
 export TRAE_UID='123456789012345'   # 账号 user_id
 python3 trae/trae_checkin.py
 ```
@@ -90,11 +94,16 @@ Vscode-Sessionid = seededStream(uid, "sess", 32).hex()
 移植自 JS 版时做过逐字符比对验证：同一个 `user_id` 在 JS 与 Python 两侧产出完全相同的
 三个头，确保服务端不会把它当成陌生设备。
 
+### 签到积分回读（Trae）
+
+`claim` 响应**不含积分数**（实测就是 `{"code":0,"message":"success"}`），真实数值只在
+`status` 端点的 `credits` 字段里。所以领取成功后脚本会补查一次状态，如实报告所得与连签天数。
+
 ### 续期策略
 
 - 距过期**不足 3 天**才续期（轮换型 RT 每次刷新都作废旧值，不能无脑刷）
 - **不知道剩余时间就不刷新**，否则可能把自己锁死
-- 续期成功后新 token 写入状态文件，下次优先读文件
+- 续期成功后新 token 写入状态文件（`data/*_credentials.json`），下次优先读文件
 
 ### 退出码
 
@@ -120,6 +129,12 @@ Vscode-Sessionid = seededStream(uid, "sess", 32).hex()
     └── qoder_checkin.py      主脚本
 ```
 
+新增一个 Agent 适配时，建议：
+
+1. 建同名子目录（如 `windsurf/`）
+2. 脚本遵循同样的约定：环境变量前缀、`*_NOTIFY` 推送策略、退出码 0/1
+3. 状态文件统一放 `data/`，并加进 `.gitignore`
+
 ## 免责声明
 
-本项目仅供学习研究。使用产生的任何后果（包括但不限于账号风险、服务条款变更）由使用者自行承担。请遵守各服务提供方的用户协议。
+本项目仅供学习研究。使用产生的任何后果（包括但不限于账号风险、服务条款变更）由使用者自行承担。请遵守各服务提供方的用户协议。代码按「现状」提供，不附带任何明示或暗示的担保。
