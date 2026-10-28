@@ -1,8 +1,8 @@
 # Agent Credit AutoCheckin
 
-为 AI 编程 Agent 自动领取每日额度。目前支持 **Trae** 与 **Qoder**。
+Agent额度自动签到脚本（Trae/Qoder），纯 Python 零依赖，支持青龙/呆呆面板。
 
-纯 Python 标准库实现，零第三方依赖，可直接在青龙、呆呆面板或任意 Python 3.8+ 环境运行。
+为 AI 编程 Agent 自动领取每日额度，可直接在青龙、呆呆面板或任意 Python 3.8+ 环境运行。
 
 ## 支持的工具
 
