@@ -1,0 +1,10 @@
+# 状态与凭据（绝不上库）
+data/
+*_credentials.json
+.env
+.env.*
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+Thumbs.db
